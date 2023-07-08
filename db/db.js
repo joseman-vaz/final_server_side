@@ -19,7 +19,10 @@ const MONGODB_URL =
 const connectDB = () => {
   mongoose.set("strictQuery", true);
   mongoose
-    .connect(MONGODB_URL)
+    .connect(MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
     .then(() => console.log("connected to mongo"))
     .catch((err) => {
       console.error("failed to connect with mongo");

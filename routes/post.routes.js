@@ -49,4 +49,26 @@ router.route("/").post(async (req, res) => {
   }
 });
 
+router.route("/image/:_id").get(async (req, res) => {
+  try {
+    const imageId = req.params._id;
+    const post = await Post.findById(imageId);
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Image not found",
+      });
+    }
+
+    const imageUrl = post.photo;
+    res.status(200).json({ success: true, imageUrl });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Fetching image failed, please try again later",
+    });
+  }
+});
+
 export default router;

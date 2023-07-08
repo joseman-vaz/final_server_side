@@ -8,19 +8,24 @@ import userRoutes from "./routes/user.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import postRoutes from "./routes/post.routes.js";
 import dalleRoutes from "./routes/dalle.routes.js";
+import commentRoutes from "./routes/comment.routes.js";
 import cors from "cors";
+import bodyParser from "body-parser";
 import isAuthenticated from "./middleware/jwt.middleware.js";
-
+import configureMiddleware from "./config/index.js";
 dotenv.config();
 
 const app = express();
+app.use(express.json({ limit: "50mb" }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 
-import configureMiddleware from "./config/index.js";
 configureMiddleware(app);
-app.use(express.json({ limit: "100000mb" }));
 app.use(cors());
+
 app.use("/user-profile", userRoutes);
 app.use("/api/v1/post", postRoutes);
+app.use("/api/v1/comments", commentRoutes);
 app.use("/api/v1/dalle", dalleRoutes);
 app.use("/api", router);
 app.use("/auth", authRoutes);
