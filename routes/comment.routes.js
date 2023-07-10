@@ -1,64 +1,56 @@
 import express from "express";
 import Comment from "../models/Comment.model.js";
-
+import isAuthenticated from "../middleware/jwt.middleware.js";
 const router = express.Router();
 
 // get all comments
-router.get("/comments/:postId", async (req, res) => {
+router.get("/:imageId", async (req, res) => {
   try {
-    const { postId } = req.params; // Use req.params instead of req.query
-    const comments = await Comment.find({ postId });
-    res.status(200).json({ success: true, comments });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Server error" });
+    const comments = await Comment.find({
+      imageId: req.params.imageId,
+    }).populate("author");
+
+    res.json(comments);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
 // Create a new comment
 router.post("/comments", async (req, res) => {
-  const { postId, author, content } = req.body;
-
   try {
-    const comment = new Comment({ postId, author, content });
-    await comment.save();
-    res.status(201).json({ success: true, comment });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Could not create comment." });
+    const comment = new Comment(req.body);
+    const savedComment = await comment.save();
+
+    res.status(201).json(savedComment);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
 // Update a comment by ID
 router.put("/comments/:_id", async (req, res) => {
-  const { _id } = req.params;
-  const { content } = req.body;
-
   try {
-    const comment = await Comment.findByIdAndUpdate(
-      _id,
-      { content },
+    const updatedComment = await Comment.findByIdAndUpdate(
+      req.params._id,
+      req.body,
       { new: true }
     );
-    res.status(200).json({ success: true, comment });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Could not update comment." });
+
+    res.json(updatedComment);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
 // Delete a comment by ID
 router.delete("/comments/:_id", async (req, res) => {
-  const { _id } = req.params;
-
   try {
-    await Comment.findByIdAndRemove(_id);
-    res.status(200).json({ success: true, message: "Comment deleted." });
-  } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, message: "Could not delete comment." });
+    const deletedComment = await Comment.findByIdAndDelete(req.params._id);
+
+    res.json(deletedComment);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

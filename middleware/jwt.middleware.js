@@ -1,15 +1,15 @@
-import jwt from "express-jwt";
 import { verify } from "jsonwebtoken";
 
 const isAuthenticated = (req, res, next) => {
   const token = getTokenFromHeaders(req);
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.redirect("/login");
   }
 
   verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.redirect("/login");
+      // res.status(401).json({ message: "Unauthorized" });
     }
 
     req.payload = decoded;
@@ -30,6 +30,7 @@ function getTokenFromHeaders(req) {
 }
 
 export default isAuthenticated;
+
 // middleware / jwt.middleware.js;
 
 // const { expressjwt: jwt } = require("express-jwt");

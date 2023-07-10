@@ -1,7 +1,7 @@
 import express from "express";
 import * as dotenv from "dotenv";
 import { v2 as cloudinary } from "cloudinary";
-
+import Comment from "../models/Comment.model.js";
 import Post from "../models/Post.model.js";
 
 dotenv.config();
@@ -60,9 +60,10 @@ router.route("/image/:_id").get(async (req, res) => {
         message: "Image not found",
       });
     }
+    const comments = await Comment.find({ imageId }).populate("author");
 
     const imageUrl = post.photo;
-    res.status(200).json({ success: true, imageUrl });
+    res.status(200).json({ success: true, imageUrl, comments });
   } catch (err) {
     res.status(500).json({
       success: false,

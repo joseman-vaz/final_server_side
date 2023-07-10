@@ -16,7 +16,7 @@ router.get("/user-profile", isAuthenticated, async (req, res) => {
 });
 
 // Update user profile
-router.put("/user-profile", isAuthenticated, async (req, res) => {
+router.put("/user/update", isAuthenticated, async (req, res) => {
   try {
     const { name, email } = req.body;
     const user = await User.findByIdAndUpdate(
