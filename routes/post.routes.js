@@ -37,6 +37,7 @@ router.route("/").post(async (req, res) => {
       name,
       prompt,
       photo: photoUrl.url,
+      comments: [],
     });
 
     res.status(200).json({ success: true, data: newPost });
@@ -51,8 +52,8 @@ router.route("/").post(async (req, res) => {
 
 router.route("/image/:_id").get(async (req, res) => {
   try {
-    const imageId = req.params._id;
-    const post = await Post.findById(imageId);
+    const postId = req.params._id;
+    const post = await Post.findById(postId).populate("comments");
 
     if (!post) {
       return res.status(404).json({
@@ -60,14 +61,35 @@ router.route("/image/:_id").get(async (req, res) => {
         message: "Image not found",
       });
     }
-    const comments = await Comment.find({ imageId }).populate("author");
-
+    const comments = post.comments;
     const imageUrl = post.photo;
-    res.status(200).json({ success: true, imageUrl, comments });
+    const name = post.name;
+    const prompt = post.prompt;
+    res.status(200).json({ success: true, imageUrl, comments, name, prompt });
   } catch (err) {
     res.status(500).json({
       success: false,
       message: "Fetching image failed, please try again later",
+    });
+  }
+});
+
+router.route("/:postId/comments").get(async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await Post.findById(postId).populate("comments");
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        message: "Post not found",
+      });
+    }
+    const comments = post.comments;
+    res.status(200).json({ success: true, comments });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: "Fetching comments failed, please try again later",
     });
   }
 });

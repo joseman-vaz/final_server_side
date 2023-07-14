@@ -4,8 +4,8 @@ const { Schema, model } = mongoose;
 const commentSchema = new Schema(
   {
     author: { type: Schema.Types.ObjectId, ref: "User" },
-    imageId: { type: Schema.Types.ObjectId, ref: "Post" },
-    content: String,
+    content: { type: String },
+    postId: { type: Schema.Types.ObjectId, ref: "Post" },
   },
   {
     timestamps: true,
