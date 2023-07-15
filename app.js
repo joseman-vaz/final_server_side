@@ -23,10 +23,10 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 configureMiddleware(app);
 app.use(cors());
 
-app.use("/api", userRoutes);
+app.use("/user", userRoutes);
 app.use("/auth", authRoutes);
 app.use("/api/v1/post", postRoutes);
-app.use("/api/v1/comments", commentRoutes);
+app.use("/api/v1/", isAuthenticated, commentRoutes);
 app.use("/api/v1/dalle", dalleRoutes);
 app.use("/api", router);
 

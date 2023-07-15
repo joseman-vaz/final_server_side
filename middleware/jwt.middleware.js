@@ -3,13 +3,12 @@ import { verify } from "jsonwebtoken";
 const isAuthenticated = (req, res, next) => {
   const token = getTokenFromHeaders(req);
   if (!token) {
-    return res.redirect("/login");
+    return res.status(401).json({ message: "Token not provided." });
   }
 
   verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
     if (err) {
-      return res.redirect("/login");
-      // res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized. Invalid token." });
     }
 
     req.payload = decoded;
