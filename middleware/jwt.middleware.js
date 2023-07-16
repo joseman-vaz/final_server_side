@@ -1,4 +1,5 @@
 import { verify } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const isAuthenticated = (req, res, next) => {
   const token = getTokenFromHeaders(req);
@@ -29,7 +30,7 @@ function getTokenFromHeaders(req) {
 }
 
 export default isAuthenticated;
-
+////////////////////////////////////////////////////////////////
 // middleware / jwt.middleware.js;
 
 // const { expressjwt: jwt } = require("express-jwt");

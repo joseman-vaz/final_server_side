@@ -24,7 +24,7 @@ const configureMiddleware = (app) => {
   // controls a very specific header to pass headers from the frontend
   app.use(
     cors({
-      origin: ["http://localhost:5173"],
+      origin: ["http://localhost:5173", process.env.ORIGIN],
     })
   );
 

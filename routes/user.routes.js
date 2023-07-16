@@ -5,15 +5,17 @@ import isAuthenticated from "../middleware/jwt.middleware.js";
 const router = Router();
 
 // Fetch user profile
-// router.get("/profile", isAuthenticated, async (req, res) => {
-//   try {
-//     const user = await User.findById(req.user._id);
-//     res.json(user);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).json({ error: "Error fetching user profile." });
-//   }
-// });
+router.get("/profile", isAuthenticated, async (req, res) => {
+  console.log("User ID from isAuthenticated middleware:", req.payload._id);
+  try {
+    const user = await User.findById(req.payload._id);
+    console.log("Fetched user:", user);
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error fetching user profile." });
+  }
+});
 
 // Fetch user by ID
 router.get("/:_id", isAuthenticated, async (req, res) => {
